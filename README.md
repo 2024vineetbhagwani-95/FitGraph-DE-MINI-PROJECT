@@ -1,93 +1,116 @@
 # FitGraph — Fitness Activity & Workout Network Analytics
 
-FitGraph is a data engineering and analytics project that processes fitness activity data to uncover workout trends, participant consistency, recovery patterns, and relationships between participants. It combines an ETL pipeline, data quality validation, a data warehouse, graph analytics, and an interactive web dashboard.
+FitGraph is a **Data Engineering mini project** built using a Kaggle health and fitness dataset. It processes fitness activity records through an ETL pipeline and generates analytical insights using data transformation, PostgreSQL, graph analytics, and an interactive dashboard.
 
-## Key Features
+### Key Features
 
-- **ETL Pipeline:** Extracts, validates, cleans, and transforms raw fitness data.
-- **Fitness Trend Analysis:** Analyzes workout frequency, duration, activity levels, and monthly trends.
-- **Consistency Analysis:** Groups participants according to their workout patterns.
-- **Recovery Analysis:** Examines recovery-related patterns using available activity data.
-- **Graph Analytics:** Represents participants as nodes and inferred activity-pattern relationships as edges.
-- **Interactive Dashboard:** Presents fitness trends and analytics through a web interface.
-- **Workflow Orchestration:** Includes Apache Airflow components for data pipeline orchestration.
+- **ETL Pipeline:** Extracts, validates, cleans, deduplicates, and transforms source data.
+- **Data Quality Checks:** Detects missing critical values, invalid ranges, and duplicate records.
+- **Fitness Analytics:** Analyzes workout frequency, duration, calories, activity types, and weekday/monthly trends.
+- **Participant Profiles:** Summarizes participant activity and fitness-related metrics.
+- **Graph Analytics:** Builds a participant similarity network using NetworkX.
+- **Interactive Dashboard:** Displays fitness insights through a React and Vite web interface.
+- **Workflow Orchestration:** Includes an Apache Airflow DAG for coordinating pipeline stages.
+-
+## Dataset
+
+The project uses the Kaggle dataset included in `data/raw/health_fitness_dataset.csv`.
+
+The bundled dataset contains approximately **687,701 activity records across 3,000 participants**, covering multiple activity types and fitness-related measurements.
+
+The pipeline processes fields such as:
+
+- Participant ID and date
+- Age, gender, height, and weight
+- Activity type, duration, and intensity
+- Calories burned and average heart rate
+- Sleep duration, stress, daily steps, and hydration
+- BMI, resting heart rate, blood pressure, and fitness-related fields
+
+Dataset statistics describe the bundled source file; they may differ if the dataset is replaced or updated.
 
 ## Technology Stack
 
 | Component | Technologies |
 |---|---|
-| Frontend | React, Vite, JavaScript |
-| Backend | Python, FastAPI |
+| Programming Language | Python |
 | Data Processing | Pandas, NumPy |
-| Machine Learning | Scikit-learn |
 | Graph Analytics | NetworkX |
+| Backend API | FastAPI |
+| Frontend | React, Vite, JavaScript |
 | Database | PostgreSQL |
-| Data Engineering | ETL, data validation, data quality checks |
 | Workflow Orchestration | Apache Airflow |
 | Containerization | Docker, Docker Compose |
-| Visualization | Interactive fitness analytics dashboard |
 
-## Project Architecture
+
+## System Architecture
 
 ```text
-Raw Fitness Activity Data
-          |
-          v
-   Data Generation / Input
-          |
-          v
-      ETL Pipeline
-          |
-          v
- Data Validation & Cleaning
-          |
-          v
- Feature Engineering & Aggregation
-          |
-          +--------------------+
-          |                    |
-          v                    v
-   Fitness Analytics      Graph Analytics
-          |                    |
-          +---------+----------+
-                    |
-                    v
-         Processed Analytics Data
-                    |
-                    v
-             FastAPI Backend
-                    |
-                    v
-           React Web Dashboard
+Kaggle Fitness Dataset (CSV)
+            |
+            v
+     Extract & Validate
+            |
+            v
+    Clean & Transform Data
+            |
+            v
+      Feature Engineering
+            |
+            +---------------------+
+            |                     |
+            v                     v
+    Fitness Analytics       Graph Analytics
+            |                     |
+            +----------+----------+
+                       |
+                       v
+             Processed JSON / CSV
+                       |
+             +---------+---------+
+             |                   |
+             v                   v
+       FastAPI Backend     PostgreSQL Warehouse
+             |
+             v
+       React Dashboard
+
+     Apache Airflow orchestrates
+     pipeline stages (optional)
 ```
 
 ## Project Structure
 
 ```text
 fgwork/
-├── airflow/          # Workflow orchestration
-├── backend/          # FastAPI backend
-├── data/             # Raw and processed datasets
-├── frontend/         # React dashboard
-├── pipeline/         # ETL and analytics scripts
-├── sql/              # Database schema and SQL files
-├── .env.example      # Example environment configuration
-├── .gitignore
+├── airflow/
+│   └── dags/             # Airflow pipeline DAG
+├── backend/
+│   └── app/              # FastAPI application
+├── data/
+│   ├── raw/              # Kaggle source dataset
+│   └── processed/        # Generated analytics outputs
+├── frontend/             # React dashboard
+├── pipeline/
+│   ├── run_pipeline.py   # Main ETL pipeline
+│   ├── transform.py      # Cleaning and transformation
+│   ├── graph.py          # Similarity graph analytics
+│   └── load_postgres.py  # Warehouse loading
+├── sql/                  # Database schema documentation
+├── .env.example
 ├── docker-compose.yml
 └── README.md
 ```
 
-## Getting Started
+## Installation and Setup
 
 ### Prerequisites
-
-Install the following tools:
 
 - Python 3.10 or later
 - Node.js and npm
 - Git
-- PostgreSQL, if using the database integration
-- Docker Desktop, if using the containerized setup
+- PostgreSQL for warehouse loading
+- Docker Desktop for containerized execution
 
 ### 1. Clone the Repository
 
@@ -96,31 +119,23 @@ git clone https://github.com/2024vineetbhagwani-95/FitGraph-DE-MINI-PROJECT.git
 cd FitGraph-DE-MINI-PROJECT
 ```
 
-### 2. Set Up the Python Environment
+### 2. Install Pipeline Dependencies
 
-Run these commands from the project root in PowerShell:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r pipeline/requirements.txt
-```
-
-### 3. Prepare the Data and Run the Pipeline
-
-Use the input dataset and pipeline commands provided by the project. For example, if the repository includes the synthetic data generator:
+Run from the project root:
 
 ```powershell
-python -m pipeline.generate_synthetic --output data/raw/synthetic_fitness_dataset.csv --participants 800 --year 2025 --seed 123
+python -m pip install -r pipeline/requirements.txt
 ```
 
-Then run the ETL pipeline:
+### 3. Run the ETL Pipeline
 
 ```powershell
-python -m pipeline.run_pipeline --input data/raw/synthetic_fitness_dataset.csv --output data/processed --skip-postgres
+python -m pipeline.run_pipeline --input data/raw/health_fitness_dataset.csv --output data/processed --skip-postgres
 ```
 
-These example commands are intended for a version that includes `pipeline.generate_synthetic`. If your Kaggle version uses a different input filename or does not include this module, use the dataset and instructions specific to that version.
+This command reads the Kaggle CSV, validates and transforms records, generates participant profiles and graph analytics, and writes processed JSON/CSV outputs. The `--skip-postgres` flag skips database loading.
+
+To load the data into PostgreSQL instead, configure the required `DATABASE_URL` connection string and run the pipeline without `--skip-postgres`.
 
 ### 4. Start the Backend
 
@@ -128,17 +143,17 @@ Open a terminal at the project root:
 
 ```powershell
 cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-If the backend entry point or dependency file differs in your version, follow the actual files in the `backend` directory.
+API documentation is available at:
+
+`http://localhost:8000/docs`
 
 ### 5. Start the Frontend
 
-Open another terminal at the project root:
+Open a second terminal at the project root:
 
 ```powershell
 cd frontend
@@ -146,12 +161,19 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite in your browser.
+Open the local URL displayed by Vite, usually:
+
+`http://localhost:5173`
+
+### 6. Run with Docker
+
+If Docker Desktop is installed and running, use the provided Compose configuration:
+
+```bash
+docker compose up --build
+```
+
+Review `docker-compose.yml` and `.env.example` for the configured services and environment variables.
 
 
 
-
-
----
-
-**Developed as a Data Engineering mini project.**
