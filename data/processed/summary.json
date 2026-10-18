@@ -1,0 +1,19 @@
+{
+  "records": 687701,
+  "participants": 3000,
+  "activity_types": 10,
+  "date_start": "2024-01-01",
+  "date_end": "2024-12-25",
+  "avg_duration": 70.01,
+  "avg_calories": 15.38,
+  "avg_steps": 8628.37,
+  "avg_sleep": 7.05,
+  "missing_health_condition": 490275,
+  "quality": {
+    "duplicate_rows": 0,
+    "missing_critical_fields": 0
+  },
+  "graph_nodes": 3000,
+  "graph_edges": 8659,
+  "graph_note": "Edges represent inferred fitness similarity, not real social relationships."
+}

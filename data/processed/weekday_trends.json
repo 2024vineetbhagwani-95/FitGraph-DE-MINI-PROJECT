@@ -1,0 +1,37 @@
+[
+  {
+    "weekday":"Monday",
+    "workouts":99345,
+    "avg_duration":69.9018672304
+  },
+  {
+    "weekday":"Tuesday",
+    "workouts":99296,
+    "avg_duration":70.1210924911
+  },
+  {
+    "weekday":"Wednesday",
+    "workouts":99674,
+    "avg_duration":69.9607520517
+  },
+  {
+    "weekday":"Thursday",
+    "workouts":97226,
+    "avg_duration":70.0204163495
+  },
+  {
+    "weekday":"Friday",
+    "workouts":97371,
+    "avg_duration":70.2124451839
+  },
+  {
+    "weekday":"Saturday",
+    "workouts":97430,
+    "avg_duration":69.88680078
+  },
+  {
+    "weekday":"Sunday",
+    "workouts":97359,
+    "avg_duration":69.9796731684
+  }
+]

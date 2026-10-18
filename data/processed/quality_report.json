@@ -1,0 +1,17 @@
+{
+  "rows_in": 687701,
+  "rows_out": 687701,
+  "missing_critical_rows_removed": 0,
+  "invalid_range_rows_removed": 0,
+  "duplicate_rows_removed": 0,
+  "health_condition_nulls_preserved": 490275,
+  "critical_nulls_remaining": 0,
+  "status": "SUCCESS",
+  "generated_at": "Bundled source snapshot",
+  "graph_nodes": 3000,
+  "graph_edges": 8659,
+  "notes": [
+    "No fully duplicated rows found.",
+    "health_condition is nullable in the source and is preserved as unknown."
+  ]
+}
