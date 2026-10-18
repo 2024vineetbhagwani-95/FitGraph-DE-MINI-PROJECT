@@ -164,13 +164,6 @@ npm run dev
 Open the local URL displayed by Vite, usually:
 
 `http://localhost:5173`
-
-### 6. Run with Docker
-
-If Docker Desktop is installed and running, use the provided Compose configuration:
-
-```bash
-docker compose up --build
 ```
 
 Review `docker-compose.yml` and `.env.example` for the configured services and environment variables.
